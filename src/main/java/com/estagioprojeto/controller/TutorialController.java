@@ -1,5 +1,6 @@
 package com.estagioprojeto.controller;
 
+import com.estagioprojeto.dto.TutorialDto;
 import com.estagioprojeto.model.Tutorial;
 import com.estagioprojeto.service.TutorialService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,9 @@ public class TutorialController {
     TutorialService tutorialService;
 
     @GetMapping("/tutorials")
-    public ResponseEntity<List<Tutorial>> getAllTutorials(@RequestParam(required = false) String title) {
+    public ResponseEntity<List<TutorialDto>> getAllTutorials(@RequestParam(required = false) String title) {
         try {
-            List<Tutorial> tutorials = tutorialService.localizarTodos(title);
+            List<TutorialDto> tutorials = tutorialService.localizarTodos(title);
 
             if (tutorials.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -40,18 +41,20 @@ public class TutorialController {
     }
 
     @GetMapping("/tutorials/{id}")
-    public ResponseEntity<Tutorial> getTutorialById(@PathVariable("id") long id) {
-        Optional<Tutorial> tutorialData = tutorialService.localizarPorId(id);
-
-        return tutorialData.map(tutorial -> new ResponseEntity<>(tutorial, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<TutorialDto> getTutorialById(@PathVariable("id") long id) {
+        TutorialDto tutorialData = tutorialService.localizarPorId(id);
+        if(tutorialData!=null){
+            return new ResponseEntity<>(tutorialData, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 
 
     @PostMapping("/tutorials")
-    public ResponseEntity<Tutorial> createTutorial(@RequestBody Tutorial tutorial) {
+    public ResponseEntity<TutorialDto> createTutorial(@RequestBody TutorialDto tutorial) {
         try {
-            Tutorial _tutorial = tutorialService.criarTutorial(tutorial);
+            TutorialDto _tutorial = tutorialService.criarTutorial(tutorial);
             return new ResponseEntity<>(_tutorial, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>((HttpHeaders) null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -59,8 +62,8 @@ public class TutorialController {
     }
 
     @PutMapping("/tutorials/{id}")
-    public ResponseEntity<Tutorial> updateTutorial(@PathVariable("id") long id, @RequestBody Tutorial tutorial) {
-        Tutorial tutorialAtualizado = tutorialService.atualizarPorId(tutorial,id);
+    public ResponseEntity<TutorialDto> updateTutorial(@PathVariable("id") long id, @RequestBody TutorialDto tutorial) {
+        TutorialDto tutorialAtualizado = tutorialService.atualizarPorId(id, tutorial);
         if(tutorialAtualizado!=null) {
             return new ResponseEntity<>(tutorialAtualizado, HttpStatus.OK);
         }else {
@@ -81,18 +84,18 @@ public class TutorialController {
     }
 
     @GetMapping("/tutorials/published")
-    public ResponseEntity<List<Tutorial>> findByPublished(boolean isPublished) {
+    public ResponseEntity<List<TutorialDto>> findByPublished(boolean isPublished) {
         try {
-            List<Tutorial> tutorials = tutorialService.findPorPublicacao(isPublished);
+            List<TutorialDto> tutorials = tutorialService.findPorPublicacao(isPublished);
             return ResponseEntity.ok(tutorials);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @GetMapping("/tutorials/chamar-todos")
-    public ResponseEntity<List<Tutorial>> chamarTodosPorDescription(@RequestParam(name = "description") String description) {
+    public ResponseEntity<List<TutorialDto>> chamarTodosPorDescription(@RequestParam(name = "description") String description) {
         try {
-            List<Tutorial> tutorials = tutorialService.chamarTodosPorDescricao(description);
+            List<TutorialDto> tutorials = tutorialService.chamarTodosPorDescricao(description);
             return ResponseEntity.ok(tutorials);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
