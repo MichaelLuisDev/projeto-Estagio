@@ -24,7 +24,6 @@ public class CursoServiceImpl implements CursoService {
     // Retorna a lista de todos os cursos existente
     @Override
     public List<CursoDto> retornaListaDeCursos() {
-
         return cursoMapper.toDtoList(cursoRepository.findAll());
     }
 
@@ -40,27 +39,51 @@ public class CursoServiceImpl implements CursoService {
         if (curso == null) {
             throw new IllegalArgumentException("O curso não pode ser nulo.");
         }
-        return cursoMapper.toDto(cursoRepository.save(cursoMapper.toEntity(curso)));
+        Curso novoCurso = cursoMapper.toEntity(curso);
+        novoCurso.setNome(curso.nome());
+        novoCurso.setDescricao(curso.descricao());
+        novoCurso.setStatusAtivo(true);
+        cursoRepository.save(novoCurso);
+        return cursoMapper.toDto(novoCurso);
     }
-
     // Atualiza um curso existente
     @Override
     public CursoDto atualizaCurso(long id, CursoDto cursoAtualizado) {
-        Curso cursoExistente = cursoMapper.toEntity(retornaCursoPorId(id));
-        cursoExistente.setNomeCurso(cursoAtualizado.curso_Nome());
-        cursoExistente.setDescricaoCurso(cursoAtualizado.curso_Descricao());
-        // Atualize outros campos se necessário (ex: status)
+        if (cursoAtualizado == null) {
+            throw new IllegalArgumentException("Entrada inválida.");
+        }
+        // 1. Busca a entidade existente no banco de dados
+        Curso cursoExistente = cursoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Curso com ID " + id + " não encontrado para atualização."));
 
-        return cursoMapper.toDto(cursoRepository.save(cursoExistente));
+        // 2. Atualiza os campos manualmente
+        if (cursoAtualizado.nome() != null) {
+            cursoExistente.setNome(cursoAtualizado.nome());
+        }
+        if (cursoAtualizado.descricao() != null) {
+            cursoExistente.setDescricao(cursoAtualizado.descricao());
+        }
+        // 3. Salva a entidade atualizada no banco de dados
+        Curso cursoSalvo = cursoRepository.save(cursoExistente);
+        // 4. CORREÇÃO: Retorna o DTO gerado a partir da entidade salva e atualizada
+        return cursoMapper.toDto(cursoSalvo);
     }
     //Delete curso por id
+    @Override
     public void deletaCurso(long id) {
         if (!cursoRepository.existsById(id)) {
             throw new EntityNotFoundException("Curso com ID " + id + " não encontrado para exclusão.");
         }
         cursoRepository.deleteById(id);
     }
+    //DELETA TUDO NÃO USE
+    @Override
+    public void deletaTudo(){
+        cursoRepository.deleteAll();
+    }
+
     //retorna todos os cursos por status
+    @Override
     public List<CursoDto>retornaListaDeCursosPorStatus(boolean status) {
         return cursoMapper.toDtoList(cursoRepository.findByStatusAtivo(status));
     }

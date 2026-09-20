@@ -8,9 +8,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CursoRepository extends JpaRepository<Curso, Long> {
-    List<Curso> findByStatusAtivo(boolean isAtivo);
-    List<Curso> findByNomeCursoContaining(String nome);
+    List<Curso> findByStatusAtivo(boolean statusAtivo);
+    List<Curso> findByNomeContaining(String nome);
 
-    @Query("SELECT c FROM Curso c WHERE LOWER(c.nomeCurso) LIKE LOWER(CONCAT('%', :nome, '%'))")
+    @Query("SELECT c FROM Curso c WHERE LOWER(c.nome) LIKE LOWER(CONCAT('%', :nome, '%'))")
     List<Curso> buscarPorNome(@Param("nome") String nome);
 }

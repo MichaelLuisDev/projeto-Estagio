@@ -12,5 +12,7 @@ public interface CursoService {
     CursoDto cadastraNovoCurso(CursoDto curso);
     CursoDto atualizaCurso(long id, CursoDto curso);
     void deletaCurso(long id);
+    void deletaTudo();
     List<CursoDto> retornaListaDeCursosPorStatus(boolean status);
+
 }

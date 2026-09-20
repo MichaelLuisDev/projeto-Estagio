@@ -32,6 +32,14 @@ public class CursoController {
         CursoDto curso = cursoService.retornaCursoPorId(id);
         return ResponseEntity.ok(curso);
     }
+    @GetMapping("/cursos/status/{status}")
+    public ResponseEntity<List<CursoDto>> buscarPorStatus(@RequestParam("status") boolean status) {
+        List<CursoDto> cursos = cursoService.retornaListaDeCursosPorStatus(status);
+        if (cursos.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(cursos, HttpStatus.OK);
+    }
 
     @PostMapping("/cursos")
     public ResponseEntity<CursoDto> createCurso(@RequestBody CursoDto curso) {
@@ -50,13 +58,9 @@ public class CursoController {
         cursoService.deletaCurso(id);
         return ResponseEntity.noContent().build();
     }
-
-    @GetMapping("/cursos/ativos") // Convenção: letras minúsculas
-    public ResponseEntity<List<CursoDto>> findByStatusAtivo(boolean status) {
-        List<CursoDto> cursos = cursoService.retornaListaDeCursosPorStatus(status);
-        if (cursos.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(cursos, HttpStatus.OK);
+    @DeleteMapping("/cursos/deletatudo")
+    public ResponseEntity<Void> deleteAll() {
+        cursoService.deletaTudo();
+        return ResponseEntity.noContent().build();
     }
 }

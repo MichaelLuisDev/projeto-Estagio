@@ -11,20 +11,23 @@ public class Curso {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "Nome do curso")
-    private String nomeCurso;
+    @Column(name = "Nome")
+    private String nome;
 
     @Column(name = "descrição")
-    private String descricaoCurso;
+    private String descricao;
 
-    @Column(name = "esta ativo?")
+    @Column(name = "ativo")
     private boolean statusAtivo;
 
     public Curso() {
+
     }
-    public Curso(String nomeCurso, String descricaoCurso, boolean statusAtivo) {
-        this.nomeCurso = nomeCurso;
-        this.descricaoCurso = descricaoCurso;
+
+    public Curso(long id, String nome, String descricao, boolean statusAtivo) {
+        this.id = id;
+        this.nome = nome;
+        this.descricao = descricao;
         this.statusAtivo = statusAtivo;
     }
 
@@ -36,20 +39,20 @@ public class Curso {
         this.id = id;
     }
 
-    public String getNomeCurso() {
-        return nomeCurso;
+    public String getNome() {
+        return nome;
     }
 
-    public void setNomeCurso(String nomeCurso) {
-        this.nomeCurso = nomeCurso;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public String getDescricaoCurso() {
-        return descricaoCurso;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setDescricaoCurso(String descricaoCurso) {
-        this.descricaoCurso = descricaoCurso;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     public boolean isStatusAtivo() {
