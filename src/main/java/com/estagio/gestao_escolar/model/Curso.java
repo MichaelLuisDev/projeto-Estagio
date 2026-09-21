@@ -20,6 +20,12 @@ public class Curso {
     @Column(name = "ativo")
     private boolean statusAtivo;
 
+    // Muitos cursos pertencem a um único professor
+    // Cria fisicamente a coluna 'professor_id' na tabela de cursos
+    @ManyToOne
+    @JoinColumn(name = "professor_id", nullable = false) // nullable = false garante que todo curso precisa ter um professor
+    private Professor professor;
+
     public Curso() {
 
     }
@@ -61,5 +67,13 @@ public class Curso {
 
     public void setStatusAtivo(boolean statusAtivo) {
         this.statusAtivo = statusAtivo;
+    }
+
+    public Professor getProfessor() {
+        return professor;
+    }
+
+    public void setProfessor(Professor professor) {
+        this.professor = professor;
     }
 }

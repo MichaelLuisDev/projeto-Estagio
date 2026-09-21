@@ -2,7 +2,9 @@ package com.estagio.gestao_escolar.service.impl;
 
 import com.estagio.gestao_escolar.dto.ProfessorDto;
 import com.estagio.gestao_escolar.mapper.ProfessorMapper;
+import com.estagio.gestao_escolar.model.Curso;
 import com.estagio.gestao_escolar.model.Professor;
+import com.estagio.gestao_escolar.repository.CursoRepository;
 import com.estagio.gestao_escolar.repository.ProfessorRepository;
 import com.estagio.gestao_escolar.service.ProfessorService;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,15 +16,24 @@ import java.util.List;
 public class ProfessorServiceImpl implements ProfessorService {
     private final ProfessorRepository professorRepository;
     private final ProfessorMapper professorMapper;
+    private final CursoRepository cursoRepository;
 
-    public ProfessorServiceImpl(ProfessorRepository professorRepository, ProfessorMapper professorMapper) {
+    public ProfessorServiceImpl(ProfessorRepository professorRepository, ProfessorMapper professorMapper, CursoRepository cursoRepository) {
         this.professorRepository = professorRepository;
         this.professorMapper = professorMapper;
+        this.cursoRepository = cursoRepository;
     }
     @Override
-    public ProfessorDto cadastraProfessor(ProfessorDto professorDto) {
-        if(professorDto != null){
+    public ProfessorDto cadastraProfessor(Long cursoId, ProfessorDto professorDto) {
+        if (professorDto != null) {
             Professor professor = professorMapper.toEntity(professorDto);
+            if (cursoId != null) {
+                Curso cursoVinculado = cursoRepository.findById(cursoId).orElse(null);
+                if (cursoVinculado != null) {
+                    professor.getCursos().add(cursoVinculado);
+                    cursoVinculado.setProfessor(professor);
+                }
+            }
             professorRepository.save(professor);
             return professorMapper.toDto(professor);
         }
@@ -42,9 +53,7 @@ public class ProfessorServiceImpl implements ProfessorService {
         }
         Professor professorDesatualizado = professorRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("ID não encontrado"));
-
         professorMapper.updateEntityFromDto(professorDesatualizado, professor);
-
         return professorMapper.toDto(professorRepository.save(professorDesatualizado));
     }
 

@@ -28,8 +28,8 @@ public class ProfessorController {
     }
 
     @PostMapping("/professor")
-    public ResponseEntity<ProfessorDto> createProfessor(@RequestBody ProfessorDto professor) {
-        ProfessorDto novoProfessor = professorService.cadastraProfessor(professor);
+    public ResponseEntity<ProfessorDto> createProfessor(@RequestParam(required = false) Long cursoId, @RequestBody ProfessorDto professor) {
+        ProfessorDto novoProfessor = professorService.cadastraProfessor(cursoId, professor);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoProfessor);
     }
 

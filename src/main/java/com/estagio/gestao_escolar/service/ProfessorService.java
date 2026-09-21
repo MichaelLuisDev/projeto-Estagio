@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ProfessorService {
 
-    ProfessorDto cadastraProfessor(ProfessorDto professor);
+    ProfessorDto cadastraProfessor(Long cursoId, ProfessorDto professor);
     List<ProfessorDto> retornaListaDeProfessores();
     ProfessorDto atualizaProfessor(long id, ProfessorDto professor);
     void deletaProfessor(long id);
