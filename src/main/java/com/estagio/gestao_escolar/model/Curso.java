@@ -3,13 +3,16 @@ package com.estagio.gestao_escolar.model;
 // import javax.persistence.*; // for Spring Boot 2
 import jakarta.persistence.*; // for Spring Boot 3
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "curso")
 public class Curso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     @Column(name = "Nome")
     private String nome;
@@ -23,25 +26,30 @@ public class Curso {
     // Muitos cursos pertencem a um único professor
     // Cria fisicamente a coluna 'professor_id' na tabela de cursos
     @ManyToOne
-    @JoinColumn(name = "professor_id", nullable = false) // nullable = false garante que todo curso precisa ter um professor
+    @JoinColumn(name = "professor_id", nullable = true)
     private Professor professor;
+
+    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Matricula> matriculas = new ArrayList<>();
 
     public Curso() {
 
     }
 
-    public Curso(long id, String nome, String descricao, boolean statusAtivo) {
+    public Curso(Long id, String nome, String descricao, boolean statusAtivo, Professor professor, List<Matricula> matriculas) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.statusAtivo = statusAtivo;
+        this.professor = professor;
+        this.matriculas = matriculas;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -75,5 +83,13 @@ public class Curso {
 
     public void setProfessor(Professor professor) {
         this.professor = professor;
+    }
+
+    public List<Matricula> getMatriculas() {
+        return matriculas;
+    }
+
+    public void setMatriculas(List<Matricula> matriculas) {
+        this.matriculas = matriculas;
     }
 }

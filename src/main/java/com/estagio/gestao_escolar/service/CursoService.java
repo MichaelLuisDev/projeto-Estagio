@@ -8,10 +8,10 @@ import java.util.List;
 public interface CursoService {
 
     List<CursoDto> retornaListaDeCursos();
-    CursoDto retornaCursoPorId(long id);
-    CursoDto cadastraNovoCurso(CursoDto curso);
-    CursoDto atualizaCurso(long id, CursoDto curso);
-    void deletaCurso(long id);
+    CursoDto retornaCursoPorId(Long id);
+    CursoDto cadastraNovoCurso(Long professorId, CursoDto curso);
+    CursoDto atualizaCurso(Long id, CursoDto curso);
+    void deletaCurso(Long id);
     void deletaTudo();
     List<CursoDto> retornaListaDeCursosPorStatus(boolean status);
 

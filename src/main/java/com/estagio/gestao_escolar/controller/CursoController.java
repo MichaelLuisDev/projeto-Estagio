@@ -28,7 +28,7 @@ public class CursoController {
     }
 
     @GetMapping("/cursos/{id}")
-    public ResponseEntity<CursoDto> getCursoById(@PathVariable("id") long id) {
+    public ResponseEntity<CursoDto> getCursoById(@PathVariable("id") Long id) {
         CursoDto curso = cursoService.retornaCursoPorId(id);
         return ResponseEntity.ok(curso);
     }
@@ -42,19 +42,19 @@ public class CursoController {
     }
 
     @PostMapping("/cursos")
-    public ResponseEntity<CursoDto> createCurso(@RequestBody CursoDto curso) {
-        CursoDto novoCurso = cursoService.cadastraNovoCurso(curso);
+    public ResponseEntity<CursoDto> createCurso(@RequestParam(required = false)Long professorId,@RequestBody CursoDto curso) {
+        CursoDto novoCurso = cursoService.cadastraNovoCurso(professorId,curso);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoCurso);
     }
 
     @PutMapping("/cursos/{id}")
-    public ResponseEntity<CursoDto> updateCurso(@PathVariable("id") long id, @RequestBody CursoDto curso) {
+    public ResponseEntity<CursoDto> updateCurso(@PathVariable("id") Long id, @RequestBody CursoDto curso) {
         CursoDto cursoAtualizado = cursoService.atualizaCurso(id, curso);
         return ResponseEntity.ok(cursoAtualizado);
     }
 
     @DeleteMapping("/cursos/{id}")
-    public ResponseEntity<Void> deleteCurso(@PathVariable("id") long id) {
+    public ResponseEntity<Void> deleteCurso(@PathVariable("id") Long id) {
         cursoService.deletaCurso(id);
         return ResponseEntity.noContent().build();
     }

@@ -4,4 +4,5 @@ public record CursoDto(
         String nome,
         String descricao,
         boolean statusAtivo
+        //ProfessorDto professor
 ) {}
